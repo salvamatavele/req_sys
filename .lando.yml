@@ -1,0 +1,42 @@
+name: expedient
+recipe: laravel
+config:
+  webroot: public
+  php: '8.2'
+  composer_version: '2.2.12'
+  via: apache:2.4
+  database: mariadb
+  ssl: true
+  cache: none
+  xdebug: false
+  config:
+    database: expedient
+    username: laravel
+    password: laravel
+    host: database
+    # for mysql
+    port: 3306
+    # for postgres
+    # port: 5432
+services:
+  phpmyadmin:
+    type: phpmyadmin:5.1
+    hosts:
+      - database
+  mariadb:
+    type: mariadb:10.3
+  nodejs:
+    type: node:18
+    ssl: false
+    globals: []
+    port: 3000
+    #build_as_root:
+      # Note that you will want to use the script for the major version of node you want to install
+      # See: https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+      #- curl -sL https://deb.nodesource.com/setup_18.x | bash -
+      #- apt-get install -y nodejs
+tooling:
+  node:
+    service: nodejs
+  yarn:
+    service: nodejs
