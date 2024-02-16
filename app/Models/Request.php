@@ -19,4 +19,8 @@ class Request extends Model
     {
         return $this->hasMany(UserRequest::class);
     }
+    public function discharge()
+    {
+        return $this->hasOne(Discharge::class);
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\ProfileController;
@@ -22,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', 'requests');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // users
     Route::middleware(['isAdmin'])->group(function () {
         Route::get('users', [UsersController::class, 'index'])->name('users.index');
@@ -47,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('requests/{id}', [RequestsController::class, 'delete'])->name('requests.delete');
     Route::delete('user_requests/{id}', [RequestsController::class, 'deleteUserRequest'])->name('user_requests.delete');
 
+    //DIscharge
+    Route::post('requests/discharge', [DischargeController::class, 'store'])->name('discharge.store');
+    Route::delete('discharge/{id}', [DischargeController::class, 'delete'])->name('discharge.delete');
 });
 
 

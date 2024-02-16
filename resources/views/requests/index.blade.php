@@ -26,7 +26,7 @@
                             class="bg-gray-500 text-white p-2 mb-5 rounded hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-gray-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-gray-700 uppercase active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]">Dar
                             entrada do documento</a>
                     </div>
-                    <table id="request_id" class="hover" style="width:100%">
+                    <table id="request_id" class="hover cell-border" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Nome do documento</th>
@@ -35,6 +35,7 @@
                                 <th style="border-bottom: 1px solid #a3bffa">Estado</th>
                                 <th>Estado Final</th>
                                 <th>Data de entrada</th>
+                                <th>Quitação</th>
                                 <th>Accao</th>
                             </tr>
                         </thead>
@@ -125,7 +126,31 @@
                                                 Rejeitado</div>
                                         @endif
                                     </td>
-                                    <td>{{ $request->created_at }}</td>
+                                    <td>{{ date('d M, Y H:i:s', strtotime($request->created_at)) }}</td>
+                                    <td>
+                                        @if ($request->status == 2)
+                                        @if ($request->discharge)
+                                            <span class="flex justify-start">
+                                                <a class="btn-link text-blue-500 hover:underline inline mr-4"
+                                                    href="{{ asset('storage/doc/' . $request->discharge->doc) }}"
+                                                    target="_blank" rel="noopener noreferrer">
+                                                    {{ $request->discharge->name ?? 'Quitação' }}
+                                                </a>
+                                                <span class="inline">
+                                                    <a href="{{ asset('storage/doc/' . $request->discharge->doc) }}"
+                                                        title="baixar a quicao" target="_blank"
+                                                        class="text-green-400 transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600">
+                                                        <i class="fa-solid fa-download"></i>
+                                                    </a>
+                                                </span>
+                                            </span>
+                                        @else
+                                            -
+                                        @endif
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>
                                         <a href="{{ asset('storage/doc/' . $request->doc) }}" title="ver"
                                             target="_blank"
@@ -140,7 +165,8 @@
                                             </a>
                                         @endif
                                         &nbsp;
-                                        <form action="{{ route('requests.delete', $request->id) }}" method="post">
+                                        <form class="inline" action="{{ route('requests.delete', $request->id) }}"
+                                            method="post">
                                             @csrf
                                             @method('delete')
                                             <button title="Apagar" onclick="return confirm('Eliminar o requerimento?')"
@@ -165,6 +191,7 @@
                                 <th style="border-bottom: 1px solid #a3bffa">Estado</th>
                                 <th>Estado Final</th>
                                 <th>Data de entrada</th>
+                                <th>Quitação</th>
                                 <th>Accao</th>
                             </tr>
                         </tfoot>

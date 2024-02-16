@@ -17,7 +17,7 @@ class RequestsController extends Controller
     public function index()
     {
         if (auth()->user()->role == 0 || auth()->user()->role == 1) {
-            $requests = ModelsRequest::all()->load('users.user');
+            $requests = ModelsRequest::all()->load('users.user','discharge');
             return view('requests.index', [
                 "requests" => $requests,
                 'pending' => sizeof(ModelsRequest::where('status', 0)->get()),
@@ -26,7 +26,7 @@ class RequestsController extends Controller
                 'rejected' => sizeof(ModelsRequest::where('status', 3)->get()),
             ]);
         } else {
-            $data = User::find(auth()->user()->id)->load('requests.request');
+            $data = User::find(auth()->user()->id)->load('requests.request.discharge');
 
             return view('requests.index_personal', [
                 "data" => $data,
@@ -108,13 +108,13 @@ class RequestsController extends Controller
                 $request = ModelsRequest::find($userRequest->request_id);
                 $request->update(['status' => 2]);
                 $twilio = new Client(getenv('TWILIO_SID'), getenv('TWILIO_KEY'));
-                $twilio->messages->create(
-                    "+258842023448", // to
-                    [
-                        "body" => "E com grande prazer que informamos que o seu requerimento foi aceite e esta pronto para o levantamento. Cumprimentos",
-                        "from" => getenv('TWILIO_MASTER_PHONE'),
-                    ]
-                );
+                // $twilio->messages->create(
+                //     "+258842023448", // to
+                //     [
+                //         "body" => "E com grande prazer que informamos que o seu requerimento foi aceite e esta pronto para o levantamento. Cumprimentos",
+                //         "from" => getenv('TWILIO_MASTER_PHONE'),
+                //     ]
+                // );
             }
             return redirect()->back()->with('success', "O progresso foi alterado com sucesso");
         } else {
@@ -129,13 +129,13 @@ class RequestsController extends Controller
             $request = ModelsRequest::find($userRequest->request_id);
             $request->update(['status' => 3]);
             $twilio = new Client(getenv('TWILIO_SID'), getenv('TWILIO_KEY'));
-            $twilio->messages->create(
-                "+258842023448", // to
-                [
-                    "body" => "Lamentamos informar que por alguma razão o seu requerimento foi rejeitado.",
-                    "from" => getenv('TWILIO_MASTER_PHONE'),
-                ]
-            );
+            // $twilio->messages->create(
+            //     "+258842023448", // to
+            //     [
+            //         "body" => "Lamentamos informar que por alguma razão o seu requerimento foi rejeitado.",
+            //         "from" => getenv('TWILIO_MASTER_PHONE'),
+            //     ]
+            // );
             return redirect()->back()->with('success', "O progresso foi alterado com sucesso");
         } else {
             return redirect()->back()->with('error', "Ooops! Erro ao tentar alterar o progresso. Tente novamente.");
